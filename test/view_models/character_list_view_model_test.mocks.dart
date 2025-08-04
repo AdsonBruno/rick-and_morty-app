@@ -7,7 +7,7 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:rick_and_morty_app/models/character_model.dart' as _i4;
-import 'package:rick_and_morty_app/repositories/character_repository.dart'
+import 'package:rick_and_morty_app/repositories/abstract/character_repository.dart'
     as _i2;
 
 // ignore_for_file: type=lint

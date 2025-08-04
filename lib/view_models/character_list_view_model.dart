@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:rick_and_morty_app/models/character_model.dart';
-import 'package:rick_and_morty_app/repositories/character_repository.dart';
+import 'package:rick_and_morty_app/repositories/abstract/character_repository.dart';
 
 class CharacterListViewModel extends ChangeNotifier {
   final CharacterRepository _repository;

@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:rick_and_morty_app/models/character_model.dart';
-import 'package:rick_and_morty_app/repositories/character_repository.dart';
+import 'package:rick_and_morty_app/repositories/abstract/character_repository.dart';
 import 'package:rick_and_morty_app/view_models/character_list_view_model.dart';
 
 import 'character_list_view_model_test.mocks.dart';
