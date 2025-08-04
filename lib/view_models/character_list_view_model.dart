@@ -56,4 +56,10 @@ class CharacterListViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void clearSearch() {
+    _characters = _originalCharactersList;
+    _errorMessage = null;
+    notifyListeners();
+  }
 }

@@ -29,10 +29,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      Provider.of<CharacterListViewModel>(
+      final viewModel = Provider.of<CharacterListViewModel>(
         context,
         listen: false,
-      ).searchCharacters(query);
+      );
+
+      if (query.isEmpty) {
+        viewModel.searchCharacters(query);
+      } else {
+        viewModel.clearSearch();
+      }
     });
   }
 
