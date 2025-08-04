@@ -12,9 +12,16 @@ class CharacterRepositoryImpl implements CharacterRepository {
   static const String _baseUrl = 'https://rickandmortyapi.com/api';
 
   @override
-  Future<List<Character>> getCharacters() async {
+  Future<List<Character>> getCharacters({String? name}) async {
     try {
-      final response = await _dio.get('$_baseUrl/character');
+      String url = '$_baseUrl/character';
+
+      if (name != null && name.isNotEmpty) {
+        url += '/?name=$name';
+      }
+
+      // final response = await _dio.get('$_baseUrl/character');
+      final response = await _dio.get(url);
 
       if (response.statusCode == 200) {
         final List<dynamic> results = response.data['results'];
@@ -24,6 +31,10 @@ class CharacterRepositoryImpl implements CharacterRepository {
         throw Exception('Failed to load characters: ${response.statusCode}');
       }
     } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return [];
+      }
+
       throw Exception('Network error: ${e.message}');
     } catch (e) {
       throw Exception('Unexpected error: ${e.toString()}');

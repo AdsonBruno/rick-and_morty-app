@@ -34,7 +34,7 @@ class MockCharacterRepository extends _i1.Mock
   }
 
   @override
-  _i3.Future<List<_i4.Character>> getCharacters() =>
+  _i3.Future<List<_i4.Character>> getCharacters({String? name}) =>
       (super.noSuchMethod(
             Invocation.method(#getCharacters, []),
             returnValue: _i3.Future<List<_i4.Character>>.value(

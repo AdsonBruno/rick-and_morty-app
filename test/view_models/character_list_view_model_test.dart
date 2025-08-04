@@ -30,7 +30,7 @@ void main() {
     ];
     when(mockRepository.getCharacters()).thenAnswer((_) async => characterList);
 
-    await viewModel.fetchCharacters();
+    await viewModel.fetchInitialCharacters();
 
     expect(viewModel.characters, isNotEmpty);
     expect(viewModel.characters.length, 1);

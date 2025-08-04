@@ -9,6 +9,7 @@ class CharacterListViewModel extends ChangeNotifier {
     : _repository = repository;
 
   List<Character> _characters = [];
+  List<Character> _originalCharactersList = [];
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -16,15 +17,40 @@ class CharacterListViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  Future<void> fetchCharacters() async {
+  Future<void> fetchInitialCharacters() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _characters = await _repository.getCharacters();
+      final charactersList = await _repository.getCharacters();
+      _characters = charactersList;
+      _originalCharactersList = charactersList;
     } on Exception catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> searchCharacters(String name) async {
+    if (name.isEmpty) {
+      _characters = _originalCharactersList;
+      _errorMessage = null;
+      notifyListeners();
+      return;
+    }
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _characters = await _repository.getCharacters(name: name);
+    } on Exception catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _characters = [];
     } finally {
       _isLoading = false;
       notifyListeners();

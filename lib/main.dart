@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) =>
           CharacterListViewModel(repository: CharacterRepositoryImpl())
-            ..fetchCharacters(),
+            ..fetchInitialCharacters(),
       child: MaterialApp(
         title: 'Rick And Morty App',
         theme: ThemeData(
