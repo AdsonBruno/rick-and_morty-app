@@ -13,17 +13,29 @@ class CharacterListViewModel extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
+  int _currentPage = 1;
+  bool _hasMoreCharacters = true;
+  bool _isLoadingMore = false;
+  String? _currentSearchQuery;
+
   List<Character> get characters => _characters;
   bool get isLoading => _isLoading;
+  bool get isLoadingMore => _isLoadingMore;
+  bool get hasMoreCharacters => _hasMoreCharacters;
   String? get errorMessage => _errorMessage;
 
   Future<void> fetchInitialCharacters() async {
     _isLoading = true;
+    _currentPage = 1;
+    _hasMoreCharacters = true;
+    _currentSearchQuery = null;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final charactersList = await _repository.getCharacters();
+      final charactersList = await _repository.getCharacters(
+        page: _currentPage,
+      );
       _characters = charactersList;
       _originalCharactersList = charactersList;
     } on Exception catch (e) {
@@ -35,19 +47,27 @@ class CharacterListViewModel extends ChangeNotifier {
   }
 
   Future<void> searchCharacters(String name) async {
-    if (name.isEmpty) {
-      _characters = _originalCharactersList;
-      _errorMessage = null;
-      notifyListeners();
-      return;
-    }
+    if (name.isEmpty) return;
 
     _isLoading = true;
+    _currentPage = 1;
+    _hasMoreCharacters = true;
+    _currentSearchQuery = name;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _characters = await _repository.getCharacters(name: name);
+      final charactersList = await _repository.getCharacters(
+        name: name,
+        page: _currentPage,
+      );
+      _characters = charactersList;
+
+      if (charactersList.length < 20) {
+        _hasMoreCharacters = false;
+      } else {
+        _hasMoreCharacters = true;
+      }
     } on Exception catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
       _characters = [];
@@ -61,5 +81,31 @@ class CharacterListViewModel extends ChangeNotifier {
     _characters = _originalCharactersList;
     _errorMessage = null;
     notifyListeners();
+  }
+
+  Future<void> fetchMoreCharacters() async {
+    if (_isLoadingMore || !_hasMoreCharacters) return;
+
+    _isLoadingMore = true;
+    notifyListeners();
+
+    _currentPage++;
+    try {
+      final newCharacters = await _repository.getCharacters(
+        name: _currentSearchQuery,
+        page: _currentPage,
+      );
+
+      if (newCharacters.isEmpty) {
+        _hasMoreCharacters = false;
+      } else {
+        _characters.addAll(newCharacters);
+      }
+    } on Exception catch (e) {
+      _errorMessage = "Erro ao carregar mais: ${e.toString()}";
+    } finally {
+      _isLoadingMore = false;
+      notifyListeners();
+    }
   }
 }

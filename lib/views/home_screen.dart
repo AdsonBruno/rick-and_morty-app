@@ -15,15 +15,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scrollController = ScrollController();
   bool _isSearching = false;
   final _searchController = TextEditingController();
   Timer? _debounce;
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchController.dispose();
     _debounce?.cancel();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 80) {
+      Provider.of<CharacterListViewModel>(
+        context,
+        listen: false,
+      ).fetchMoreCharacters();
+    }
   }
 
   void _onSearchChanged(String query) {
@@ -34,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         listen: false,
       );
 
-      if (query.isEmpty) {
+      if (query.isNotEmpty) {
         viewModel.searchCharacters(query);
       } else {
         viewModel.clearSearch();
@@ -65,17 +84,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   AppBar _buildSearchAppBar() {
+    final viewModel = Provider.of<CharacterListViewModel>(
+      context,
+      listen: false,
+    );
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
         onPressed: () {
+          _debounce?.cancel();
+          viewModel.clearSearch();
           setState(() {
             _isSearching = false;
             _searchController.clear();
-            Provider.of<CharacterListViewModel>(
-              context,
-              listen: false,
-            ).searchCharacters('');
           });
         },
       ),
@@ -94,6 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
         IconButton(
           icon: const Icon(Icons.clear, color: AppColors.textPrimary),
           onPressed: () {
+            _debounce?.cancel();
+            viewModel.clearSearch();
             _searchController.clear();
           },
         ),
@@ -125,9 +148,28 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           return ListView.builder(
+            controller: _scrollController,
             padding: const EdgeInsets.all(8.0),
-            itemCount: viewModel.characters.length,
+            itemCount: viewModel.hasMoreCharacters
+                ? viewModel.characters.length + 1
+                : viewModel.characters.length,
             itemBuilder: (context, index) {
+              if (index >= viewModel.characters.length) {
+                return viewModel.isLoadingMore
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Image.asset(
+                            'assets/gifs/rick-and-morty-television.gif',
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink();
+              }
+
               final character = viewModel.characters[index];
               return CharacterCard(character: character);
             },

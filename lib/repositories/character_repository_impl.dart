@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:rick_and_morty_app/repositories/abstract/character_repository.dart';
 import 'package:rick_and_morty_app/models/character_model.dart';
@@ -12,16 +10,17 @@ class CharacterRepositoryImpl implements CharacterRepository {
   static const String _baseUrl = 'https://rickandmortyapi.com/api';
 
   @override
-  Future<List<Character>> getCharacters({String? name}) async {
+  Future<List<Character>> getCharacters({String? name, int page = 1}) async {
+    final queryParameters = {
+      'page': page,
+      if (name != null && name.isNotEmpty) 'name': name,
+    };
+
     try {
-      String url = '$_baseUrl/character';
-
-      if (name != null && name.isNotEmpty) {
-        url += '/?name=$name';
-      }
-
-      // final response = await _dio.get('$_baseUrl/character');
-      final response = await _dio.get(url);
+      final response = await _dio.get(
+        '$_baseUrl/character',
+        queryParameters: queryParameters,
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> results = response.data['results'];

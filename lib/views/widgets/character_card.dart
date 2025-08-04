@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/core/theme/app_colors.dart';
 import 'package:rick_and_morty_app/core/theme/app_text_styles.dart';
 import 'package:rick_and_morty_app/models/character_model.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CharacterCard extends StatelessWidget {
   final Character character;
