@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rick_and_morty_app/core/theme/app_colors.dart';
 import 'package:rick_and_morty_app/repositories/character_repository_impl.dart';
 import 'package:rick_and_morty_app/view_models/character_list_view_model.dart';
 import 'package:rick_and_morty_app/views/home_screen.dart';
@@ -20,8 +21,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Rick And Morty App',
         theme: ThemeData(
-          scaffoldBackgroundColor: Color(0xFF272B33),
-          appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF272B33)),
+          scaffoldBackgroundColor: AppColors.background,
+          appBarTheme: const AppBarTheme(backgroundColor: AppColors.background),
         ),
         home: const HomeScreen(),
       ),

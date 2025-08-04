@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rick_and_morty_app/core/theme/app_colors.dart';
+import 'package:rick_and_morty_app/core/theme/app_text_styles.dart';
 import 'package:rick_and_morty_app/models/character_model.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CharacterCard extends StatelessWidget {
   final Character character;
@@ -16,7 +19,7 @@ class CharacterCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(34)),
         margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 13),
 
-        color: const Color(0xFF3C3E44),
+        color: AppColors.cardBackground,
         child: Row(
           children: [
             Padding(
@@ -47,44 +50,24 @@ class CharacterCard extends StatelessWidget {
                   children: [
                     Text(
                       character.name,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: const Color(0xFFFF9800),
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: AppTextStyles.characterName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Última localização conhecida:',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[400],
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'Última localização conhecida',
+                      style: AppTextStyles.cardLabel,
                     ),
                     Text(
                       character.lastLocationName,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.white),
-                      maxLines: 1,
+                      style: AppTextStyles.cardValue,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'Gênero:',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[400],
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      character
-                          .species, // O protótipo mostra a espécie como Gênero
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.white),
-                    ),
+                    Text('Gênero:', style: AppTextStyles.cardLabel),
+                    Text(character.species, style: AppTextStyles.cardValue),
                   ],
                 ),
               ),
