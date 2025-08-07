@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:rick_and_morty_app/models/character_model.dart';
 import 'package:rick_and_morty_app/repositories/abstract/character_repository.dart';
+import 'package:rick_and_morty_app/view_models/character_list_state.dart';
 
 class CharacterListViewModel extends ChangeNotifier {
   final CharacterRepository _repository;
@@ -8,52 +8,47 @@ class CharacterListViewModel extends ChangeNotifier {
   CharacterListViewModel({required CharacterRepository repository})
     : _repository = repository;
 
-  List<Character> _characters = [];
-  List<Character> _originalCharactersList = [];
-  bool _isLoading = false;
-  String? _errorMessage;
+  CharacterListViewState _state = const CharacterListViewState();
+  CharacterListViewState get state => _state;
 
   int _currentPage = 1;
-  bool _hasMoreCharacters = true;
-  bool _isLoadingMore = false;
   String? _currentSearchQuery;
 
-  List<Character> get characters => _characters;
-  bool get isLoading => _isLoading;
-  bool get isLoadingMore => _isLoadingMore;
-  bool get hasMoreCharacters => _hasMoreCharacters;
-  String? get errorMessage => _errorMessage;
-
   Future<void> fetchInitialCharacters() async {
-    _isLoading = true;
     _currentPage = 1;
-    _hasMoreCharacters = true;
     _currentSearchQuery = null;
-    _errorMessage = null;
+    _state = _state.copyWith(status: ViewStatus.loading);
     notifyListeners();
 
     try {
       final charactersList = await _repository.getCharacters(
         page: _currentPage,
       );
-      _characters = charactersList;
-      _originalCharactersList = charactersList;
+
+      _state = _state.copyWith(
+        status: ViewStatus.success,
+        characters: charactersList,
+        hasMoreCharacters: charactersList.isNotEmpty,
+      );
     } on Exception catch (e) {
-      _errorMessage = e.toString().replaceAll('Exception: ', '');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      _state = _state.copyWith(
+        status: ViewStatus.error,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
     }
+
+    notifyListeners();
   }
 
   Future<void> searchCharacters(String name) async {
-    if (name.isEmpty) return;
+    if (name.isEmpty) {
+      clearSearch();
+      return;
+    }
 
-    _isLoading = true;
     _currentPage = 1;
-    _hasMoreCharacters = true;
     _currentSearchQuery = name;
-    _errorMessage = null;
+    _state = _state.copyWith(status: ViewStatus.loading);
     notifyListeners();
 
     try {
@@ -61,32 +56,29 @@ class CharacterListViewModel extends ChangeNotifier {
         name: name,
         page: _currentPage,
       );
-      _characters = charactersList;
-
-      if (charactersList.length < 20) {
-        _hasMoreCharacters = false;
-      } else {
-        _hasMoreCharacters = true;
-      }
+      _state = _state.copyWith(
+        status: ViewStatus.success,
+        characters: charactersList,
+        hasMoreCharacters: charactersList.length >= 20,
+      );
     } on Exception catch (e) {
-      _errorMessage = e.toString().replaceAll('Exception: ', '');
-      _characters = [];
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      _state = _state.copyWith(
+        status: ViewStatus.error,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+        characters: [],
+      );
     }
-  }
-
-  void clearSearch() {
-    _characters = _originalCharactersList;
-    _errorMessage = null;
     notifyListeners();
   }
 
-  Future<void> fetchMoreCharacters() async {
-    if (_isLoadingMore || !_hasMoreCharacters) return;
+  void clearSearch() {
+    fetchInitialCharacters();
+  }
 
-    _isLoadingMore = true;
+  Future<void> fetchMoreCharacters() async {
+    if (_state.status == ViewStatus.loadingMore || !_state.hasMoreCharacters) return;
+
+    _state = _state.copyWith(status: ViewStatus.loadingMore);
     notifyListeners();
 
     _currentPage++;
@@ -96,16 +88,17 @@ class CharacterListViewModel extends ChangeNotifier {
         page: _currentPage,
       );
 
-      if (newCharacters.isEmpty) {
-        _hasMoreCharacters = false;
-      } else {
-        _characters.addAll(newCharacters);
-      }
+      _state = _state.copyWith(
+        status: ViewStatus.success,
+        characters: [..._state.characters, ...newCharacters],
+        hasMoreCharacters: newCharacters.isNotEmpty,
+      );
     } on Exception catch (e) {
-      _errorMessage = "Erro ao carregar mais: ${e.toString()}";
-    } finally {
-      _isLoadingMore = false;
-      notifyListeners();
+      _state = _state.copyWith(
+        status: ViewStatus.error,
+        errorMessage: 'Erro ao carregar mais: ${e.toString()}',
+      );
     }
+    notifyListeners();
   }
 }
