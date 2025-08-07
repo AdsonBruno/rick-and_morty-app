@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rick_and_morty_app/core/theme/app_colors.dart';
 import 'package:rick_and_morty_app/core/theme/app_text_styles.dart';
 import 'package:rick_and_morty_app/models/character_model.dart';
+import 'package:rick_and_morty_app/views/widgets/character_detail_screen.dart';
 
 class CharacterCard extends StatelessWidget {
   final Character character;
@@ -12,7 +13,12 @@ class CharacterCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: Implementar navegação para tela de detalhes
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CharacterDetailScreen(character: character),
+          ),
+        );
       },
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(34)),
