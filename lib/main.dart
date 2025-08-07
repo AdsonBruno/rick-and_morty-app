@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/core/di/app_dependecies.dart';
 import 'package:rick_and_morty_app/core/theme/app_colors.dart';
-import 'package:rick_and_morty_app/repositories/character_repository_impl.dart';
 import 'package:rick_and_morty_app/view_models/character_list_view_model.dart';
 import 'package:rick_and_morty_app/views/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const RickAndMortyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RickAndMortyApp extends StatelessWidget {
+  const RickAndMortyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +33,5 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
-
-    // return ChangeNotifierProvider(
-    //   create: (context) =>
-    //       CharacterListViewModel(repository: CharacterRepositoryImpl())
-    //         ..fetchInitialCharacters(),
-    //   child: MaterialApp(
-    //     title: 'Rick And Morty App',
-    //     theme: ThemeData(
-    //       scaffoldBackgroundColor: AppColors.background,
-    //       appBarTheme: const AppBarTheme(backgroundColor: AppColors.background),
-    //     ),
-    //     home: const HomeScreen(),
-    //   ),
-    // );
   }
 }

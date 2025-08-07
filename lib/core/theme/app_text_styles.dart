@@ -26,4 +26,10 @@ class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w400,
   );
+
+  static final TextStyle messageInformation = GoogleFonts.inter(
+    color: AppColors.textPrimary,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+  );
 }
