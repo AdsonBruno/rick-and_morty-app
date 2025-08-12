@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/core/theme/app_colors.dart';
 import 'package:rick_and_morty_app/core/theme/app_text_styles.dart';
