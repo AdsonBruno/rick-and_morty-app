@@ -3,6 +3,7 @@ class Character {
   final String name;
   final String status;
   final String species;
+  final String gender;
   final String image;
   final String lastLocationName;
 
@@ -11,6 +12,7 @@ class Character {
     required this.name,
     required this.status,
     required this.species,
+    required this.gender,
     required this.image,
     required this.lastLocationName,
   });
@@ -21,6 +23,7 @@ class Character {
       name: json['name'],
       status: json['status'],
       species: json['species'],
+      gender: json['gender'],
       image: json['image'],
       lastLocationName: json['location']['name'] ?? 'Unknown',
     );

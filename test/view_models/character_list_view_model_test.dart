@@ -24,6 +24,7 @@ void main() {
         name: name,
         status: 'Alive',
         species: 'Human',
+        gender: 'Male',
         image: 'url-image',
         lastLocationName: 'Earth',
       );

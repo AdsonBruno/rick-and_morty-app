@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rick_and_morty_app/core/di/app_dependecies.dart';
 import 'package:rick_and_morty_app/core/theme/app_colors.dart';
 import 'package:rick_and_morty_app/view_models/character_list_view_model.dart';
-import 'package:rick_and_morty_app/views/home_screen.dart';
+import 'package:rick_and_morty_app/views/splash_screen.dart';
 
 void main() {
   runApp(const RickAndMortyApp());
@@ -21,6 +21,7 @@ class RickAndMortyApp extends StatelessWidget {
           context.read<CharacterListViewModel>();
 
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Rick And Morty App',
             theme: ThemeData(
               scaffoldBackgroundColor: AppColors.background,
@@ -28,7 +29,7 @@ class RickAndMortyApp extends StatelessWidget {
                 backgroundColor: AppColors.background,
               ),
             ),
-            home: const HomeScreen(),
+            home: const SplashScreen(),
           );
         },
       ),
